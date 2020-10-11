@@ -1,8 +1,8 @@
 pipeline {
   agent {
     kubernetes {
-      label 'image-build-1'
-      idleMinutes 3
+      label 'image-build'
+      idleMinutes 10
       defaultContainer 'jnlp'
       yaml """
 apiVersion: v1
@@ -28,6 +28,8 @@ spec:
 }
   }
   stages {
+    stage('Build Images') {
+      parallel {
         stage('Build GCE Image with Packer') {
           steps {
             container('packer') {
@@ -55,5 +57,7 @@ spec:
             }
           }
         }
+      }
+    }
   }
 }
